@@ -267,7 +267,7 @@ const CVForm = ({ onSave, onUpdate, initialData, editMode, onCancel }) => {
           accept="image/*"
           onChange={handleFotoChange}
           className="input"
-          required
+          required={!editMode}
         />
         {formData.foto && (
           <div className="mt-4">
