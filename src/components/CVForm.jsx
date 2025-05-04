@@ -20,9 +20,13 @@ const CVForm = ({ onSave, onUpdate, initialData, editMode, onCancel }) => {
     foto: null
   });
 
+  // Nuevo estado para saber si tiene experiencia laboral
+  const [tieneExperiencia, setTieneExperiencia] = useState(true);
+
   useEffect(() => {
     if (initialData) {
       setFormData(initialData);
+      setTieneExperiencia(initialData.experiencia && initialData.experiencia.length > 0);
     }
   }, [initialData]);
 
@@ -80,10 +84,14 @@ const CVForm = ({ onSave, onUpdate, initialData, editMode, onCancel }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const datosAGuardar = {
+      ...formData,
+      experiencia: tieneExperiencia ? formData.experiencia : []
+    };
     if (editMode && onUpdate) {
-      onUpdate(formData);
+      onUpdate(datosAGuardar);
     } else {
-      onSave(formData);
+      onSave(datosAGuardar);
     }
     setFormData({
       nombre: '',
@@ -103,6 +111,7 @@ const CVForm = ({ onSave, onUpdate, initialData, editMode, onCancel }) => {
       }],
       foto: null
     });
+    setTieneExperiencia(true);
   };
 
   return (
@@ -193,71 +202,135 @@ const CVForm = ({ onSave, onUpdate, initialData, editMode, onCancel }) => {
         ))}
       </div>
 
-      {/* Experiencia Laboral */}
+      {/* Pregunta sobre experiencia laboral */}
       <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-4 text-gray-700">Experiencia Laboral</h3>
-        {formData.experiencia.map((exp, index) => (
-          <div key={index} className="mb-4 p-4 border border-gray-200 rounded-lg">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Empleador</label>
-                <input
-                  type="text"
-                  name="empleador"
-                  value={exp.empleador}
-                  onChange={(e) => handleExperienciaChange(index, e)}
-                  className="input"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Cargo</label>
-                <input
-                  type="text"
-                  name="cargo"
-                  value={exp.cargo}
-                  onChange={(e) => handleExperienciaChange(index, e)}
-                  className="input"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Fecha de Inicio</label>
-                <input
-                  type="date"
-                  name="fechaInicio"
-                  value={exp.fechaInicio}
-                  onChange={(e) => handleExperienciaChange(index, e)}
-                  className="input"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Fecha de Fin</label>
-                <input
-                  type="date"
-                  name="fechaFin"
-                  value={exp.fechaFin}
-                  onChange={(e) => handleExperienciaChange(index, e)}
-                  className="input"
-                  required
-                />
-              </div>
-              <div className="col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Responsabilidades</label>
-                <textarea
-                  name="responsabilidades"
-                  value={exp.responsabilidades}
-                  onChange={(e) => handleExperienciaChange(index, e)}
-                  className="input"
-                  rows="3"
-                  required
-                />
-              </div>
-            </div>
-          </div>
-        ))}
+        <h3 className="text-lg font-semibold mb-4 text-gray-700">¿Tiene experiencia laboral?</h3>
+        <div className="flex items-center gap-4 mb-4">
+          <label>
+            <input
+              type="radio"
+              name="tieneExperiencia"
+              value="si"
+              checked={tieneExperiencia === true}
+              onChange={() => setTieneExperiencia(true)}
+            />{' '}Sí
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="tieneExperiencia"
+              value="no"
+              checked={tieneExperiencia === false}
+              onChange={() => setTieneExperiencia(false)}
+            />{' '}No
+          </label>
+        </div>
       </div>
+
+      {/* Experiencia Laboral solo si tiene experiencia */}
+      {tieneExperiencia && (
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold mb-4 text-gray-700">Experiencia Laboral</h3>
+          {formData.experiencia.map((exp, index) => (
+            <div key={index} className="mb-4 p-4 border border-gray-200 rounded-lg">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Empleador</label>
+                  <input
+                    type="text"
+                    name="empleador"
+                    value={exp.empleador}
+                    onChange={(e) => handleExperienciaChange(index, e)}
+                    className="input"
+                    required={tieneExperiencia}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Cargo</label>
+                  <input
+                    type="text"
+                    name="cargo"
+                    value={exp.cargo}
+                    onChange={(e) => handleExperienciaChange(index, e)}
+                    className="input"
+                    required={tieneExperiencia}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Fecha de Inicio</label>
+                  <input
+                    type="date"
+                    name="fechaInicio"
+                    value={exp.fechaInicio}
+                    onChange={(e) => handleExperienciaChange(index, e)}
+                    className="input"
+                    required={tieneExperiencia}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Fecha de Fin</label>
+                  <input
+                    type="date"
+                    name="fechaFin"
+                    value={exp.fechaFin}
+                    onChange={(e) => handleExperienciaChange(index, e)}
+                    className="input"
+                    required={tieneExperiencia}
+                  />
+                </div>
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Responsabilidades</label>
+                  <textarea
+                    name="responsabilidades"
+                    value={exp.responsabilidades}
+                    onChange={(e) => handleExperienciaChange(index, e)}
+                    className="input"
+                    rows="3"
+                    required={tieneExperiencia}
+                  />
+                </div>
+              </div>
+              {/* Botón para eliminar experiencia si hay más de una */}
+              {formData.experiencia.length > 1 && (
+                <button
+                  type="button"
+                  className="btn btn-danger mt-2"
+                  onClick={() => {
+                    setFormData(prev => ({
+                      ...prev,
+                      experiencia: prev.experiencia.filter((_, i) => i !== index)
+                    }));
+                  }}
+                >
+                  Eliminar experiencia
+                </button>
+              )}
+            </div>
+          ))}
+          {/* Botón para agregar nueva experiencia */}
+          <button
+            type="button"
+            className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors"
+            onClick={() => {
+              setFormData(prev => ({
+                ...prev,
+                experiencia: [
+                  ...prev.experiencia,
+                  {
+                    empleador: '',
+                    cargo: '',
+                    fechaInicio: '',
+                    fechaFin: '',
+                    responsabilidades: ''
+                  }
+                ]
+              }));
+            }}
+          >
+            Agregar otra experiencia
+          </button>
+        </div>
+      )}
 
       {/* Foto */}
       <div className="mb-6">
