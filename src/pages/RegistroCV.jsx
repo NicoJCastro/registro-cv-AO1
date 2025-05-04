@@ -5,10 +5,20 @@ const RegistroCV = () => {
   const navigate = useNavigate();
 
   const handleSaveCV = (newCV) => {    
-    const existingCVs = JSON.parse(localStorage.getItem('cvs') || '[]');    
-    const updatedCVs = [...existingCVs, newCV];    
-    localStorage.setItem('cvs', JSON.stringify(updatedCVs));    
-    navigate('/lista');
+    try {
+      if (typeof(Storage) === 'undefined') {
+        alert('El navegador no soporta almacenamiento local.');
+        return;
+      }
+      const existingCVs = JSON.parse(localStorage.getItem('cvs') || '[]');    
+      const updatedCVs = [...existingCVs, newCV];    
+      localStorage.setItem('cvs', JSON.stringify(updatedCVs));    
+      alert('CV guardado correctamente.');
+      navigate('/lista');
+    } catch (e) {
+      alert('Ocurrió un error al guardar el CV. Verifique la consola.');
+      console.error(e);
+    }
   };
 
   return (

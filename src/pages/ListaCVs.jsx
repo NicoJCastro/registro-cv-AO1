@@ -44,11 +44,21 @@ const ListaCVs = () => {
   };
 
   const handleUpdateCV = (updatedCV) => {
-    const updatedCVs = cvs.map((cv, idx) => idx === editIndex ? updatedCV : cv);
-    setCVs(updatedCVs);
-    localStorage.setItem('cvs', JSON.stringify(updatedCVs));
-    setEditIndex(null);
-    setShowForm(false);
+    try {
+      if (typeof(Storage) === 'undefined') {
+        alert('El navegador no soporta almacenamiento local.');
+        return;
+      }
+      const updatedCVs = cvs.map((cv, idx) => idx === editIndex ? updatedCV : cv);
+      setCVs(updatedCVs);
+      localStorage.setItem('cvs', JSON.stringify(updatedCVs));
+      alert('CV actualizado correctamente.');
+      setEditIndex(null);
+      setShowForm(false);
+    } catch (e) {
+      alert('Ocurrió un error al actualizar el CV. Verifique la consola.');
+      console.error(e);
+    }
   };
 
   const handleAddCV = () => {
@@ -58,10 +68,20 @@ const ListaCVs = () => {
   };
 
   const handleSaveCV = (newCV) => {
-    const updatedCVs = [...cvs, newCV];
-    setCVs(updatedCVs);
-    localStorage.setItem('cvs', JSON.stringify(updatedCVs));
-    setShowForm(false);
+    try {
+      if (typeof(Storage) === 'undefined') {
+        alert('El navegador no soporta almacenamiento local.');
+        return;
+      }
+      const updatedCVs = [...cvs, newCV];
+      setCVs(updatedCVs);
+      localStorage.setItem('cvs', JSON.stringify(updatedCVs));
+      alert('CV guardado correctamente.');
+      setShowForm(false);
+    } catch (e) {
+      alert('Ocurrió un error al guardar el CV. Verifique la consola.');
+      console.error(e);
+    }
   };
 
   return (
